@@ -92,6 +92,17 @@ int main() {
 					double psi = j[1]["psi"];
 					double v = j[1]["speed"];
 
+					double steer_value = j[1]["steering_angle"];
+					double throttle_value = j[1]["throttle"];
+
+					double Lf = 2.67;
+
+					//Run simulation for 100 ms
+					double dt = 0.1;
+					px = px + v*cos(psi)*dt;
+					py = py + v*sin(psi)*dt;
+					psi = psi + v*deg2rad(steer_value)*dt/Lf;
+
 					for(int i=0; i<ptsx.size();i++){
 						double shift_x = ptsx[i]-px;
 						double shift_y = ptsy[i]-py;
@@ -110,10 +121,10 @@ int main() {
 
 					//Calculate cte an epsi
 					double cte  = polyeval(coeffs,0);
+//					double epsi = psi - atan(coeffs[1] + 2*px*coeffs[2]+ 3*coeffs[3]*pow(px, 2));
 					double epsi = -atan(coeffs[1]);
 
-					double steer_value = j[1]["steering_angle"];
-					double throttle_value = j[1]["throttle"];
+
 
 					Eigen::VectorXd state(6);
 					state<< 0,0,0,v,cte,epsi;
@@ -127,7 +138,7 @@ int main() {
 
 					auto vars = mpc.Solve(state, coeffs);
 
-					double Lf = 2.67;
+
 					json msgJson;
 					// NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
 					// Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
@@ -179,7 +190,7 @@ int main() {
 					//
 					// NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
 					// SUBMITTING.
-					//this_thread::sleep_for(chrono::milliseconds(100));
+					this_thread::sleep_for(chrono::milliseconds(100));
 					ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 				}
 			} else {
