@@ -97,12 +97,6 @@ int main() {
 
 					double Lf = 2.67;
 
-					//Run simulation for 100 ms
-					double dt = 0.1;
-					px = px + v*cos(psi)*dt;
-					py = py + v*sin(psi)*dt;
-					psi = psi + v*deg2rad(steer_value)*dt/Lf;
-
 					for(int i=0; i<ptsx.size();i++){
 						double shift_x = ptsx[i]-px;
 						double shift_y = ptsy[i]-py;
@@ -119,15 +113,20 @@ int main() {
 
 					auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);
 
+					//Run simulation for 100 ms
+					double dt = 0.1;
+					px = v*cos(psi)*dt;
+					py = v*sin(psi)*dt;
+					psi = v*deg2rad(steer_value)*dt/Lf;
+					v = v + throttle_value*dt;
+
 					//Calculate cte an epsi
-					double cte  = polyeval(coeffs,0);
-//					double epsi = psi - atan(coeffs[1] + 2*px*coeffs[2]+ 3*coeffs[3]*pow(px, 2));
-					double epsi = -atan(coeffs[1]);
-
-
+					double cte  = polyeval(coeffs,0)-py;
+					double epsi = psi - atan(coeffs[1] + 2*px*coeffs[2]+ 3*coeffs[3]*pow(px, 2));
+//					double epsi = -atan(coeffs[1]);
 
 					Eigen::VectorXd state(6);
-					state<< 0,0,0,v,cte,epsi;
+					state<< px,py,psi,v,cte,epsi;
 
 					/*
 					 * TODO: Calculate steering angle and throttle using MPC.
