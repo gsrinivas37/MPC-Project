@@ -9,6 +9,7 @@ using namespace std;
 class MPC {
  public:
   MPC();
+  float w_cte,w_epsi,w_v, w_delta, w_acc, w_d_delta, w_d_a;
 
   virtual ~MPC();
 

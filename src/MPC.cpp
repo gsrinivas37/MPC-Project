@@ -23,7 +23,7 @@ const double Lf = 2.67;
 
 // Both the reference cross track and orientation errors are 0.
 // The reference velocity is set to 40 mph.
-double ref_v = 40;
+double ref_v = 80;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -42,6 +42,7 @@ public:
 	// Fitted polynomial coefficients
 	Eigen::VectorXd coeffs;
 	FG_eval(Eigen::VectorXd coeffs) { this->coeffs = coeffs; }
+	float w_cte,w_epsi,w_v, w_delta, w_acc, w_d_delta, w_d_a;
 
 	typedef CPPAD_TESTVECTOR(AD<double>) ADvector;
 	void operator()(ADvector& fg, const ADvector& vars) {
@@ -230,6 +231,13 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
 	// object that computes objective and constraints
 	FG_eval fg_eval(coeffs);
+	fg_eval.w_cte = w_cte;
+	fg_eval.w_epsi = w_epsi;
+	fg_eval.w_v = w_v;
+	fg_eval.w_delta = w_delta;
+	fg_eval.w_acc = w_acc;
+	fg_eval.w_d_delta = w_d_delta;
+	fg_eval.w_d_a = w_d_a;
 
 	//
 	// NOTE: You don't have to worry about these options

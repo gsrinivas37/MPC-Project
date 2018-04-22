@@ -65,11 +65,31 @@ Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
 	return result;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 	uWS::Hub h;
 
 	// MPC is initialized here!
 	MPC mpc;
+	if(argc==8){
+		std::cout<<"Setting values from command line"<<endl;
+		mpc.w_cte = atof(argv[1]);
+		mpc.w_epsi = atof(argv[2]);
+		mpc.w_v = atof(argv[3]);
+		mpc.w_delta = atof(argv[4]);
+		mpc.w_acc = atof(argv[5]);
+		mpc.w_d_delta = atof(argv[6]);
+		mpc.w_d_a = atof(argv[7]);
+	}else{
+		std::cout<<"Setting default values"<<endl;
+		mpc.w_cte = 2000;
+		mpc.w_epsi = 2000;
+		mpc.w_v = 1;
+		mpc.w_delta = 5;
+		mpc.w_acc = 5;
+		mpc.w_d_delta = 200;
+		mpc.w_d_a = 10;
+	}
+
 
 	h.onMessage([&mpc](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
 			uWS::OpCode opCode) {
