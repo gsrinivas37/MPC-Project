@@ -81,13 +81,22 @@ int main(int argc, char *argv[]) {
 		mpc.w_d_a = atof(argv[7]);
 	}else{
 		std::cout<<"Setting default values"<<endl;
-		mpc.w_cte = 2000;
-		mpc.w_epsi = 2000;
+		mpc.w_cte = 1000;
+		mpc.w_epsi = 1000;
 		mpc.w_v = 1;
-		mpc.w_delta = 5;
-		mpc.w_acc = 5;
-		mpc.w_d_delta = 200;
-		mpc.w_d_a = 10;
+		mpc.w_delta = 1;
+		mpc.w_acc = 1;
+		mpc.w_d_delta = 500;
+		mpc.w_d_a = 1;
+
+//		These values also work fine.
+//		mpc.w_cte = 2000;
+//		mpc.w_epsi = 2000;
+//		mpc.w_v = 1;
+//		mpc.w_delta = 5;
+//		mpc.w_acc = 5;
+//		mpc.w_d_delta = 200;
+//		mpc.w_d_a = 10;
 	}
 
 
@@ -117,6 +126,7 @@ int main(int argc, char *argv[]) {
 
 					double Lf = 2.67;
 
+					//Transform the ptsx and ptsy from global co-ordinate system to car co-ordinate system.
 					for(int i=0; i<ptsx.size();i++){
 						double shift_x = ptsx[i]-px;
 						double shift_y = ptsy[i]-py;
@@ -150,7 +160,7 @@ int main(int argc, char *argv[]) {
 					state<< px_post,py_post,psi_post,v_post,cte_post,epsi_post;
 
 					/*
-					 * TODO: Calculate steering angle and throttle using MPC.
+					 * Calculate steering angle and throttle using MPC.
 					 *
 					 * Both are in between [-1, 1].
 					 *
